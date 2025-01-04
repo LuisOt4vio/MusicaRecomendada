@@ -10,16 +10,18 @@ import java.time.Period;
 public class Usuario {
 
     @Id
-    private String id;
+    private String id;  // ID do usuário, usando String para permitir UUID ou outro formato
     @Property
-    private String nome;
+    private String nome;  // Nome do usuário
     @Property
-    private LocalDate dataNascimento;
+    private LocalDate dataNascimento;  // Data de nascimento do usuário
     @Property
-    private String genero;
+    private String genero;  // Gênero do usuário
 
+    // Construtor vazio necessário para o Neo4j
     public Usuario() {}
 
+    // Construtor para facilitar a criação de instâncias
     public Usuario(String id, String nome, LocalDate dataNascimento, String genero) {
         this.id = id;
         this.nome = nome;
@@ -27,6 +29,7 @@ public class Usuario {
         this.genero = genero;
     }
 
+    // Getters e setters
     public String getId() {
         return id;
     }
@@ -59,6 +62,7 @@ public class Usuario {
         this.genero = genero;
     }
 
+    // Método para calcular a idade do usuário com base na data de nascimento
     public int getIdade() {
         return Period.between(dataNascimento, LocalDate.now()).getYears();
     }
