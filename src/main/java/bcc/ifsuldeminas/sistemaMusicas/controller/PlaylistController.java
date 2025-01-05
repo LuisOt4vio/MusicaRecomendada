@@ -27,7 +27,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Playlist> buscarPlaylistPorId(@PathVariable String id) {
+    public ResponseEntity<Playlist> buscarPlaylistPorId(@PathVariable long id) {
         Optional<Playlist> playlist = playlistService.buscarPlaylistPorId(id);
         return playlist.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -40,7 +40,7 @@ public class PlaylistController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarPlaylist(@PathVariable String id) {
+    public ResponseEntity<Void> deletarPlaylist(@PathVariable long id) {
         Optional<Playlist> playlist = playlistService.buscarPlaylistPorId(id);
         if (playlist.isPresent()) {
             playlistService.deletarPlaylist(id);
@@ -49,4 +49,17 @@ public class PlaylistController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/criar")
+    public ResponseEntity<Playlist> criarPlaylist(@RequestParam String nome, @RequestParam String descricao) {
+        Playlist playlist = playlistService.criarPlaylist(nome, descricao);
+        return ResponseEntity.ok(playlist);
+    }
+
+    @PostMapping("/{playlistId}/adicionarMusica/{musicaId}")
+    public ResponseEntity<Playlist> adicionarMusicaNaPlaylist(@PathVariable Long playlistId, @PathVariable Long musicaId) {
+        Playlist playlist = playlistService.adicionarMusicaNaPlaylist(playlistId, musicaId);
+        return ResponseEntity.ok(playlist);
+    }
+
 }

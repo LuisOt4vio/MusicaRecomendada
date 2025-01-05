@@ -2,10 +2,12 @@ package bcc.ifsuldeminas.sistemaMusicas.controller;
 
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Musica;
 import bcc.ifsuldeminas.sistemaMusicas.service.MusicaService;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.Optional;
 /*
@@ -70,5 +72,38 @@ public class MusicaController {
     public String buscarMusicasPorArtista(@PathVariable String artistId) {
         deezerService.buscarMusicasPorArtista(artistId);
         return "Músicas do artista com ID " + artistId + " estão salvas no banco de dados!";
+    }
+
+    @GetMapping("/buscando")
+    public String buscarMusica(@RequestParam String nome) {
+        return deezerService.buscarMusicaPorNome(nome);
+    }
+
+/*
+    @GetMapping("/pesquisar")
+    public ResponseEntity<?> pesquisarEAdicionarMusica(@RequestParam String titulo) {
+        try {
+            Musica musica = deezerService.pesquisarPorTituloEAdicionarAoBanco(titulo);
+            return new ResponseEntity<>(musica, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }*/
+
+
+    @GetMapping("/pesquisar")
+    public ResponseEntity<Musica> pesquisarMusica(@RequestParam String titulo) throws JSONException {
+        Musica musica = deezerService.buscarMusicaPorTitulo(titulo);
+        if (musica != null) {
+            return ResponseEntity.ok(musica);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @PostMapping("/cadastrar")
+    public Musica cadastrarMusica(@RequestBody String titulo) throws JSONException {
+        return deezerService.buscarEMusicaCadastrar(titulo);
     }
 }

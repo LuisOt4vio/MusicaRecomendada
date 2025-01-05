@@ -27,6 +27,8 @@ public class Musica {
         this.artista = artista;
         this.deezerId = deezerId;
     }
+
+
     public String getTitulo() {
         return titulo;
     }
