@@ -1,20 +1,26 @@
 package bcc.ifsuldeminas.sistemaMusicas.model.entities;
 
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Property;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.UUID;
 
 @Node
 public class Usuario {
 
     @Id
-    private String id;  // ID do usuário, usando String para permitir UUID ou outro formato
+    @GeneratedValue
+    private long id;
+
     @Property
     private String nome;  // Nome do usuário
+
     @Property
     private LocalDate dataNascimento;  // Data de nascimento do usuário
+
     @Property
     private String genero;  // Gênero do usuário
 
@@ -22,19 +28,18 @@ public class Usuario {
     public Usuario() {}
 
     // Construtor para facilitar a criação de instâncias
-    public Usuario(String id, String nome, LocalDate dataNascimento, String genero) {
-        this.id = id;
+    public Usuario(String nome, LocalDate dataNascimento, String genero) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.genero = genero;
     }
 
     // Getters e setters
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -62,7 +67,6 @@ public class Usuario {
         this.genero = genero;
     }
 
-    // Método para calcular a idade do usuário com base na data de nascimento
     public int getIdade() {
         return Period.between(dataNascimento, LocalDate.now()).getYears();
     }

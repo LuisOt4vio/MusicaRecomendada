@@ -5,5 +5,7 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MusicaRepository extends Neo4jRepository<Musica, String> {
+public interface MusicaRepository extends Neo4jRepository<Musica, Long>{
+
 }
+

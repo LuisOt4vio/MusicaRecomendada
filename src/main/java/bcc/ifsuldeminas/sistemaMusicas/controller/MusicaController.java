@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
+/*
 @RestController
 @RequestMapping("/musicas")
 public class MusicaController {
@@ -48,5 +48,27 @@ public class MusicaController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+}
+*/
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/musicas")
+public class MusicaController {
+
+    private final MusicaService deezerService;
+
+    @Autowired
+    public MusicaController(MusicaService deezerService) {
+        this.deezerService = deezerService;
+    }
+
+    @PostMapping("/buscar/{artistId}")
+    public String buscarMusicasPorArtista(@PathVariable String artistId) {
+        deezerService.buscarMusicasPorArtista(artistId);
+        return "Músicas do artista com ID " + artistId + " estão salvas no banco de dados!";
     }
 }

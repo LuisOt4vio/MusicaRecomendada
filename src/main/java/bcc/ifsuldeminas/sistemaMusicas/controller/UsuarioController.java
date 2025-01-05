@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -29,7 +30,7 @@ public class UsuarioController {
 
     // Endpoint para buscar um usuário pelo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable String id) {
+    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable long  id) {
         Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
         if (usuario.isPresent()) {
             return new ResponseEntity<>(usuario.get(), HttpStatus.OK);
@@ -47,7 +48,7 @@ public class UsuarioController {
 
     // Endpoint para deletar um usuário
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable String id) {
+    public ResponseEntity<Void> deletarUsuario(@PathVariable long  id) {
         Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
         if (usuario.isPresent()) {
             usuarioService.deletarUsuario(id);
@@ -59,7 +60,7 @@ public class UsuarioController {
 
     // Endpoint para calcular a idade de um usuário
     @GetMapping("/{id}/idade")
-    public ResponseEntity<Integer> calcularIdade(@PathVariable String id) {
+    public ResponseEntity<Integer> calcularIdade(@PathVariable long id) {
         Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
         if (usuario.isPresent()) {
             int idade = usuarioService.calcularIdade(usuario.get());

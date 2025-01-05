@@ -5,6 +5,7 @@ import bcc.ifsuldeminas.sistemaMusicas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UsuarioService {
@@ -22,7 +23,7 @@ public class UsuarioService {
     }
 
     // Buscar um usuário pelo ID
-    public Optional<Usuario> buscarUsuarioPorId(String id) {
+    public Optional<Usuario> buscarUsuarioPorId(long id) {
         return usuarioRepository.findById(id);
     }
 
@@ -32,7 +33,7 @@ public class UsuarioService {
     }
 
     // Deletar um usuário pelo ID
-    public void deletarUsuario(String id) {
+    public void deletarUsuario(long  id) {
         usuarioRepository.deleteById(id);
     }
 
@@ -40,4 +41,6 @@ public class UsuarioService {
     public int calcularIdade(Usuario usuario) {
         return usuario.getIdade();
     }
+
+
 }
