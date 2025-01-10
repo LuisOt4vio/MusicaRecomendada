@@ -1,5 +1,4 @@
 package bcc.ifsuldeminas.sistemaMusicas.model.entities;
-
 import org.springframework.data.neo4j.core.schema.*;
 
 import java.util.ArrayList;
@@ -7,7 +6,7 @@ import java.util.List;
 
 
 @Node
-public class Genero {
+public class Artista {
     @Id
     @GeneratedValue
     private Long id;
@@ -18,14 +17,18 @@ public class Genero {
     @Property
     private String spotifyId;
 
-    @Relationship(type = "PERTENCE_A", direction = Relationship.Direction.INCOMING)
+    @Property
+    private String link;
+
+    @Relationship(type = "CRIADO_POR", direction = Relationship.Direction.INCOMING)
     private List<Musica> musicas = new ArrayList<>();
 
-    public Genero() {}
+    public Artista() {}
 
-    public Genero(String nome, String spotifyId) {
+    public Artista(String nome, String spotifyId, String link) {
         this.nome = nome;
         this.spotifyId = spotifyId;
+        this.link = link;
     }
 
     public Long getId() {
@@ -52,11 +55,23 @@ public class Genero {
         this.spotifyId = spotifyId;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     public List<Musica> getMusicas() {
         return musicas;
     }
 
     public void setMusicas(List<Musica> musicas) {
         this.musicas = musicas;
+    }
+
+    public void setGeneros(List<Genero> generos) {
+
     }
 }

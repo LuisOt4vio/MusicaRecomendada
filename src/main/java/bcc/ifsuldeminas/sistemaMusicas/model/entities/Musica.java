@@ -1,9 +1,10 @@
 package bcc.ifsuldeminas.sistemaMusicas.model.entities;
 
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Property;
+import org.springframework.data.neo4j.core.schema.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Node
 public class Musica {
@@ -15,43 +16,61 @@ public class Musica {
     private String titulo;
 
     @Property
-    private String artista;
+    private String spotifyId;
 
-    @Property
-    private String deezerId;
+    @Relationship(type = "PERTENCE_A", direction = Relationship.Direction.OUTGOING)
+    private List<Genero> generos = new ArrayList<>();
 
-    public Musica(){}
+    @Relationship(type = "CRIADO_POR", direction = Relationship.Direction.OUTGOING)
+    private List<Artista> artistas = new ArrayList<>();
 
-    public Musica(String titulo, String artista, String deezerId) {
+    public Musica() {}
+
+    public Musica(String titulo, String spotifyId, List<Genero> generos, List<Artista> artistas) {
         this.titulo = titulo;
-        this.artista = artista;
-        this.deezerId = deezerId;
+        this.spotifyId = spotifyId;
+        this.generos = generos;
+        this.artistas = artistas;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitulo() {
         return titulo;
     }
+
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
-    public Long getId() {
-        return id;
+
+    public String getSpotifyId() {
+        return spotifyId;
     }
-    public void setId(Long id) {
-        this.id = id;
+
+    public void setSpotifyId(String spotifyId) {
+        this.spotifyId = spotifyId;
     }
-    public String getArtista() {
-        return artista;
+
+    public List<Genero> getGeneros() {
+        return generos;
     }
-    public void setArtista(String artista) {
-        this.artista = artista;
+
+    public void setGeneros(List<Genero> generos) {
+        this.generos = generos;
     }
-    public String getDeezerId() {
-        return deezerId;
+
+    public List<Artista> getArtistas() {
+        return artistas;
     }
-    public void setDeezerId(String deezerId) {
-        this.deezerId = deezerId;
+
+    public void setArtistas(List<Artista> artistas) {
+        this.artistas = artistas;
     }
 
 }

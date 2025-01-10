@@ -9,55 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/generos")
 public class GeneroController {
 
-    private final GeneroService generoService;
-
     @Autowired
-    public GeneroController(GeneroService generoService) {
-        this.generoService = generoService;
+    private GeneroService generoService;
+
+    @PostMapping
+    public Genero criarGenero(@RequestBody Genero genero) {
+        return generoService.salvarGenero(genero);
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Genero>> listarGeneros() {
-        Iterable<Genero> generos = generoService.listarGeneros();
-        return new ResponseEntity<>(generos, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Genero> buscarGeneroPorId(@PathVariable long id) {
-        Optional<Genero> genero = generoService.buscarGeneroPorId(id);
-        return genero.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @PostMapping
-    public ResponseEntity<Genero> salvarGenero(@RequestBody Genero genero) {
-        Genero generoSalvo = generoService.salvarGenero(genero);
-        return new ResponseEntity<>(generoSalvo, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarGenero(@PathVariable long id) {
-        Optional<Genero> genero = generoService.buscarGeneroPorId(id);
-        if (genero.isPresent()) {
-            generoService.deletarGenero(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("/adicionar/{deezerId}")
-    public Genero adicionarGenero(@PathVariable String deezerId) {
-        return generoService.buscarEAdicionarGeneroPorId(deezerId);
-    }
-    @PostMapping("/adicionarN/{nome}")
-    public Genero adicionarGeneroPorNome(@PathVariable String nome) {
-        return generoService.buscarEAdicionarGeneroPorNome(nome);
+    public List<Genero> listarGeneros() {
+        return generoService.listarGeneros();
     }
 }
