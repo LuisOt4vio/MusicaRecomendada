@@ -69,4 +69,6 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
 }

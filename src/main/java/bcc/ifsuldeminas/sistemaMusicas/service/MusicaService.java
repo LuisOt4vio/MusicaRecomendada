@@ -380,7 +380,6 @@ public class MusicaService {
             String url = "https://api.deezer.com/album/" + albumId;
 
             try {
-
                 ResponseEntity<DeezerAlbumResponse> response = restTemplate.getForEntity(url, DeezerAlbumResponse.class);
 
                 if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
@@ -389,7 +388,12 @@ public class MusicaService {
                     DeezerAlbumResponse.Artist artistData = albumData.getArtist();
                     Artista artista = salvarArtistaSeNaoExistir(artistData);
 
+                    // Salvando e associando o gênero
                     Genero genero = salvarGeneroSeNaoExistir(albumData.getGenres().getData().get(0));
+                    artista.adicionarGenero(genero); // Associando o gênero ao artista
+
+                    // Agora, salvando o artista com a associação
+                    artistaRepository.save(artista); // Isso irá persistir a relação entre o artista e o gênero no banco de dados
 
                     for (DeezerAlbumResponse.Track trackData : albumData.getTracks().getData()) {
                         salvarMusicaSeNaoExistir(trackData, artista, genero);
@@ -400,6 +404,7 @@ public class MusicaService {
             }
         }
     }
+
 
     private Artista salvarArtistaSeNaoExistir(DeezerAlbumResponse.Artist artistData) {
         return (Artista) artistaRepository.findBySpotifyId(artistData.getId().toString())

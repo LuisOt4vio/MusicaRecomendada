@@ -1,10 +1,8 @@
 package bcc.ifsuldeminas.sistemaMusicas.model.entities;
 
 import org.springframework.data.neo4j.core.schema.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Node
 public class Genero {
@@ -20,6 +18,9 @@ public class Genero {
 
     @Relationship(type = "PERTENCE_A", direction = Relationship.Direction.INCOMING)
     private List<Musica> musicas = new ArrayList<>();
+
+    @Relationship(type = "ESTILO", direction = Relationship.Direction.OUTGOING)
+    private List<Artista> artistas = new ArrayList<>(); // Artistas relacionados a esse Gênero
 
     public Genero() {}
 
@@ -58,5 +59,13 @@ public class Genero {
 
     public void setMusicas(List<Musica> musicas) {
         this.musicas = musicas;
+    }
+
+    public List<Artista> getArtistas() {
+        return artistas;
+    }
+
+    public void setArtistas(List<Artista> artistas) {
+        this.artistas = artistas;
     }
 }

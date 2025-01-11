@@ -11,7 +11,7 @@ public class DeezerDataScheduler {
 
     @Scheduled(fixedDelay = 60000)
     public void executarBuscaDeAlbuns() {
-        deezerService.salvarDadosAPartirDeAlbuns(8000, 9000);
+        deezerService.salvarDadosAPartirDeAlbuns(1, 20000);
     }
     //Precisa trocar os valores de parametro, eu usei de 1 a 100000 mas vai demorar bastante.
 }
