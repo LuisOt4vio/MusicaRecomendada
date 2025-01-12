@@ -323,7 +323,7 @@ public class MusicaService {
             throw new RuntimeException("Artista não encontrado.");
         }
 
-        Artista artista = new Artista(response.getName(), response.getId(), response.getLink());
+        Artista artista = new Artista(response.getName(), response.getId(), response.getLink(), response.getPicture());
 
         List<Genero> generos = new ArrayList<>();
         if (response.getGenres() != null && response.getGenres().getData() != null) {
@@ -363,7 +363,7 @@ public class MusicaService {
         }
 
         for (DeezerTrack track : response.getData()) {
-            Musica musica = new Musica(track.getTitle(), track.getId(), new ArrayList<>(), new ArrayList<>());
+            Musica musica = new Musica(track.getTitle(), track.getId(),track.getPreview(), track.getLink(), new ArrayList<>(), new ArrayList<>());
             musica.getArtistas().add(artista.get());
             musicaRepository.save(musica);
         }
@@ -397,10 +397,11 @@ public class MusicaService {
 
                     for (DeezerAlbumResponse.Track trackData : albumData.getTracks().getData()) {
                         salvarMusicaSeNaoExistir(trackData, artista, generos);
+                        System.out.println("Sucesso " + albumId);
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Erro ao processar o album de ID " + albumId + ": " + e.getMessage());
+               System.out.println("Erro ao processar o album de ID " + albumId + ": " + e.getMessage());
             }
         }
     }
@@ -412,6 +413,7 @@ public class MusicaService {
                     artista.setNome(artistData.getName());
                     artista.setSpotifyId(artistData.getId().toString());
                     artista.setLink(artistData.getLink());
+                    artista.setPicture(artistData.getPicture());
                     return artistaRepository.save(artista);
                 });
     }
@@ -431,6 +433,8 @@ public class MusicaService {
             Musica musica = new Musica();
             musica.setTitulo(trackData.getTitle());
             musica.setSpotifyId(trackData.getId().toString());
+            musica.setPreview(trackData.getPreview());
+            musica.setLink(trackData.getLink());
             musica.getArtistas().add(artista);
             musica.getGeneros().addAll(generos);
             musicaRepository.save(musica);

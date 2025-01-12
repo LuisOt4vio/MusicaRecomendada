@@ -1,6 +1,12 @@
 package bcc.ifsuldeminas.sistemaMusicas.service;
 
 public class DeezerTrack {
+    private String id;
+    private String title;
+    private String preview;  // Novo campo// Novo campo
+    private String link;  // Novo campo
+
+    // Getters e setters
     public String getId() {
         return id;
     }
@@ -17,8 +23,20 @@ public class DeezerTrack {
         this.title = title;
     }
 
-    private String id;
-    private String title;
+    public String getPreview() {  // Novo getter
+        return preview;
+    }
+
+    public void setPreview(String preview) {  // Novo setter
+        this.preview = preview;
+    }
 
 
+    public String getLink() {  // Novo getter
+        return link;
+    }
+
+    public void setLink(String link) {  // Novo setter
+        this.link = link;
+    }
 }

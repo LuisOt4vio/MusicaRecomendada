@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -185,7 +186,8 @@ public class MusicaController {
                     Artista artista = new Artista(
                             (String) artistData.get("name"),
                             String.valueOf(artistData.get("id")),
-                            (String) artistData.get("link")
+                            (String) artistData.get("link"),
+                            (String) artistData.get("picture")
                     );
                     artista = artistaRepository.save(artista);
 
@@ -201,7 +203,6 @@ public class MusicaController {
                         genero = generoRepository.save(genero);
                         generos.add(genero);
                     }
-
                     // Salvar as músicas
                     Map<String, Object> tracksData = (Map<String, Object>) albumData.get("tracks");
                     List<Map<String, Object>> tracks = (List<Map<String, Object>>) tracksData.get("data");
@@ -209,6 +210,8 @@ public class MusicaController {
                         Musica musica = new Musica(
                                 (String) trackData.get("title"),
                                 String.valueOf(trackData.get("id")),
+                                String.valueOf(trackData.get("link")),
+                                String.valueOf(trackData.get("preview")),
                                 generos,
                                 List.of(artista) // Associar música ao artista
                         );

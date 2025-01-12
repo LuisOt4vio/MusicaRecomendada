@@ -24,6 +24,9 @@ public class Artista {
     @Property
     private String link;
 
+    @Property
+    private String picture;
+
     @Relationship(type = "CRIADO_POR", direction = Relationship.Direction.INCOMING)
     private List<Musica> musicas = new ArrayList<>();
 
@@ -36,13 +39,22 @@ public class Artista {
 
     public Artista() {}
 
-    public Artista(String nome, String spotifyId, String link) {
+    public Artista(String nome, String spotifyId, String link, String picture) {
         this.nome = nome;
         this.spotifyId = spotifyId;
+        this.picture = picture;
         this.link = link;
     }
 
     // Getters e setters
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 
     public Long getId() {
         return id;

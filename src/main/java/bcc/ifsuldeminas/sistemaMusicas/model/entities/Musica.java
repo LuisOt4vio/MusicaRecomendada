@@ -18,6 +18,13 @@ public class Musica {
     @Property
     private String spotifyId;
 
+    @Property
+    private String preview;
+
+    @Property
+    private String link;
+
+
     @Relationship(type = "PERTENCE_A", direction = Relationship.Direction.OUTGOING)
     private List<Genero> generos = new ArrayList<>();
 
@@ -26,11 +33,29 @@ public class Musica {
 
     public Musica() {}
 
-    public Musica(String titulo, String spotifyId, List<Genero> generos, List<Artista> artistas) {
+    public Musica(String titulo, String spotifyId, String preview, String link, List<Genero> generos, List<Artista> artistas) {
         this.titulo = titulo;
         this.spotifyId = spotifyId;
+        this.preview = preview;
+        this.link = link;
         this.generos = generos;
         this.artistas = artistas;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getPreview() {
+        return preview;
+    }
+
+    public void setPreview(String preview) {
+        this.preview = preview;
     }
 
     public Long getId() {
