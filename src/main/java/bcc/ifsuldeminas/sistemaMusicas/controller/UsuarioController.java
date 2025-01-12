@@ -1,7 +1,10 @@
 package bcc.ifsuldeminas.sistemaMusicas.controller;
 
+import bcc.ifsuldeminas.sistemaMusicas.model.entities.Musica;
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Playlist;
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Usuario;
+import bcc.ifsuldeminas.sistemaMusicas.service.DeezerTrack;
+import bcc.ifsuldeminas.sistemaMusicas.service.DeezerTracksResponse;
 import bcc.ifsuldeminas.sistemaMusicas.service.PlaylistService;
 import bcc.ifsuldeminas.sistemaMusicas.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -180,6 +185,16 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao remover música do usuário.");
         }
+    }
+    @GetMapping("/{id}/recomendacoes/artistas")
+    public ResponseEntity<?> recomendarMusicasPorArtista(@PathVariable Long id) {
+        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorArtista(id);
+        return ResponseEntity.ok(recomendacoes);
+    }
+    @GetMapping("/{id}/recomendacoes/usuarios")
+    public ResponseEntity<?> recomendarMusicasPorUsuarios(@PathVariable Long id) {
+        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorUsuarios(id);
+        return ResponseEntity.ok(recomendacoes);
     }
 
 

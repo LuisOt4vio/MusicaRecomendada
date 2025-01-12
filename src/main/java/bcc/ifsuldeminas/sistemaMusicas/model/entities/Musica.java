@@ -1,5 +1,9 @@
 package bcc.ifsuldeminas.sistemaMusicas.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.data.neo4j.core.schema.*;
 
 import java.util.ArrayList;
@@ -29,6 +33,7 @@ public class Musica {
     private List<Genero> generos = new ArrayList<>();
 
     @Relationship(type = "CRIADO_POR", direction = Relationship.Direction.OUTGOING)
+    @JsonIgnore
     private List<Artista> artistas = new ArrayList<>();
 
     public Musica() {}
