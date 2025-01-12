@@ -10,7 +10,7 @@ import java.util.List;
 public class Musica {
     @Id
     @GeneratedValue
-    private Long id;
+    private long id;
 
     @Property
     private String titulo;

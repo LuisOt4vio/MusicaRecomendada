@@ -8,9 +8,10 @@ import java.util.List;
 @Node
 public class Playlist {
 
+
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @Property
     private String nome;
@@ -18,8 +19,8 @@ public class Playlist {
     @Property
     private String descricao;
 
-    @Relationship(type = "Possui")
-    private List<Musica> musicas = new ArrayList<>();
+    @Relationship(type = "Possui", direction = Relationship.Direction.OUTGOING)
+    private List<Musica> musica = new ArrayList<>();
 
     public Playlist() {}
 
@@ -28,7 +29,9 @@ public class Playlist {
         this.nome = nome;
         this.descricao=descricao;
     }
-
+    public void adicionarMusica(Musica musica) {
+        this.musica.add(musica);
+    }
     public long getId() {
         return id;
     }
@@ -54,10 +57,10 @@ public class Playlist {
     }
 
     public List<Musica> getMusicas() {
-        return musicas;
+        return musica;
     }
 
     public void setMusicas(List<Musica> musicas) {
-        this.musicas = musicas;
+        this.musica = musicas;
     }
 }

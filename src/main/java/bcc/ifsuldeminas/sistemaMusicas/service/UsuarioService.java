@@ -1,9 +1,12 @@
 package bcc.ifsuldeminas.sistemaMusicas.service;
 
+import bcc.ifsuldeminas.sistemaMusicas.model.entities.Playlist;
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Usuario;
 import bcc.ifsuldeminas.sistemaMusicas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,5 +45,40 @@ public class UsuarioService {
         return usuario.getIdade();
     }
 
+    public Usuario cadastrarUsuario(String nome, String senha, String genero, LocalDate dataNascimento) throws IllegalArgumentException {
 
+        Optional<Usuario> usuarioExistente = Optional.ofNullable(usuarioRepository.findByNome(nome));
+        if (usuarioExistente.isPresent()) {
+            throw new IllegalArgumentException("Já existe um usuário com este nome.");
+        }
+
+
+        Usuario usuario = new Usuario(nome, dataNascimento, genero, senha);
+        return usuarioRepository.save(usuario);
+    }
+    public boolean login(String nome, String senha) {
+        Usuario usuario = usuarioRepository.findByNomeAndSenha(nome, senha);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Nome ou senha incorretos.");
+        }
+        return true;
+    }
+    public void conectarPlaylistAoUsuario(Long usuarioId, Playlist playlist) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+
+
+        usuario.adicionarPlaylist(playlist);
+
+
+        usuarioRepository.save(usuario);
+    }
+
+    public Usuario buscarPorId(Long id) {
+        return usuarioRepository.findById(id).orElse(null);
+    }
+
+    public void salvar(Usuario usuario) {
+        usuarioRepository.save(usuario);
+    }
 }

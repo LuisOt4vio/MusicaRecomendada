@@ -1,12 +1,11 @@
 package bcc.ifsuldeminas.sistemaMusicas.model.entities;
 
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Property;
+import org.springframework.data.neo4j.core.schema.*;
+
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @Node
 public class Usuario {
@@ -14,6 +13,7 @@ public class Usuario {
     @Id
     @GeneratedValue
     private long id;
+
 
     @Property
     private String nome;  // Nome do usuário
@@ -24,15 +24,52 @@ public class Usuario {
     @Property
     private String genero;  // Gênero do usuário
 
+    @Property
+    private String senha;
+
+
+    @Relationship(type = "CRIAR"  , direction = Relationship.Direction.OUTGOING)
+    private List<Playlist> playlists = new ArrayList<>();
+
+
+    @Relationship(type = "ADICIONOU"  , direction = Relationship.Direction.OUTGOING)
+    private List<Musica> musica = new ArrayList<>();
+
+    public List<Musica> getMusica() {
+        return musica;
+    }
+
+    public void setMusica(List<Musica> musica) {
+        this.musica = musica;
+    }
+    public void adicionarMusica(Musica musica) {
+        this.musica.add(musica);
+    }
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
+    }
+
+    public void adicionarPlaylist(Playlist playlist) {
+        this.playlists.add(playlist);
+    }
+
     // Construtor vazio necessário para o Neo4j
     public Usuario() {}
 
-    // Construtor para facilitar a criação de instâncias
-    public Usuario(String nome, LocalDate dataNascimento, String genero) {
+
+    public Usuario(String nome, LocalDate dataNascimento, String genero, String senha) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.genero = genero;
+        this.senha = senha;
     }
+
+
+
 
     // Getters e setters
     public long getId() {
@@ -70,4 +107,12 @@ public class Usuario {
     public int getIdade() {
         return Period.between(dataNascimento, LocalDate.now()).getYears();
     }
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
 }
