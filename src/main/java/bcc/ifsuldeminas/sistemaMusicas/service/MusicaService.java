@@ -312,12 +312,10 @@ public class MusicaService {
 
     private final String BASE_URL = "https://api.deezer.com";
 
-    public Artista salvarArtistaEGeneros(String artistId) {
+    public Object salvarArtistaEGeneros(String artistId) {
         RestTemplate restTemplate = new RestTemplate();
 
-
         String artistaUrl = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/artist/" + artistId).toUriString();
-
 
         var response = restTemplate.getForObject(artistaUrl, DeezerArtistResponse.class);
 
@@ -325,9 +323,7 @@ public class MusicaService {
             throw new RuntimeException("Artista não encontrado.");
         }
 
-
         Artista artista = new Artista(response.getName(), response.getId(), response.getLink());
-
 
         List<Genero> generos = new ArrayList<>();
         if (response.getGenres() != null && response.getGenres().getData() != null) {
@@ -337,17 +333,20 @@ public class MusicaService {
                     genero = new Genero(genre.getName(), genre.getId());
                     generoRepository.save(genero);
                 }
-                generos.add(genero);
+                generos.add(genero);  // Adiciona cada gênero à lista
             }
         }
 
+        // Aqui, estamos assegurando que todos os gêneros sejam associados ao artista
+        artista.setGeneros(generos);
         artistaRepository.save(artista);
+
         return artista;
     }
 
+
     public void salvarMusicasDoArtista(String artistId) {
         RestTemplate restTemplate = new RestTemplate();
-
 
         String musicasUrl = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/artist/" + artistId + "/top").toUriString();
 
@@ -357,21 +356,18 @@ public class MusicaService {
             throw new RuntimeException("Nenhuma música encontrada para o artista.");
         }
 
+        Optional<Artista> artista = artistaRepository.findBySpotifyId(artistId);
 
-        Optional<Object> artista = artistaRepository.findBySpotifyId(artistId);
-
-        if (artista == null) {
+        if (artista.isEmpty()) {
             throw new RuntimeException("Artista não encontrado no banco de dados.");
         }
 
-
         for (DeezerTrack track : response.getData()) {
-            Musica musica = new Musica(track.getTitle(), track.getId(), new ArrayList<>(), List.of());
+            Musica musica = new Musica(track.getTitle(), track.getId(), new ArrayList<>(), new ArrayList<>());
+            musica.getArtistas().add(artista.get());
             musicaRepository.save(musica);
         }
     }
-
-
 
     public void salvarDadosAPartirDeAlbuns(int albumInicio, int albumFim) {
         RestTemplate restTemplate = new RestTemplate();
@@ -388,15 +384,19 @@ public class MusicaService {
                     DeezerAlbumResponse.Artist artistData = albumData.getArtist();
                     Artista artista = salvarArtistaSeNaoExistir(artistData);
 
-                    // Salvando e associando o gênero
-                    Genero genero = salvarGeneroSeNaoExistir(albumData.getGenres().getData().get(0));
-                    artista.adicionarGenero(genero); // Associando o gênero ao artista
+                    artista.adicionarAlbumId(String.valueOf(albumId));
+                    artistaRepository.save(artista);
 
-                    // Agora, salvando o artista com a associação
-                    artistaRepository.save(artista); // Isso irá persistir a relação entre o artista e o gênero no banco de dados
+                    List<Genero> generos = new ArrayList<>();
+                    for (DeezerAlbumResponse.GenreData genreData : albumData.getGenres().getData()) {
+                        Genero genero = salvarGeneroSeNaoExistir(genreData);
+                        generos.add(genero);
+                        artista.adicionarGenero(genero);
+                    }
+                    artistaRepository.save(artista);
 
                     for (DeezerAlbumResponse.Track trackData : albumData.getTracks().getData()) {
-                        salvarMusicaSeNaoExistir(trackData, artista, genero);
+                        salvarMusicaSeNaoExistir(trackData, artista, generos);
                     }
                 }
             } catch (Exception e) {
@@ -405,9 +405,8 @@ public class MusicaService {
         }
     }
 
-
     private Artista salvarArtistaSeNaoExistir(DeezerAlbumResponse.Artist artistData) {
-        return (Artista) artistaRepository.findBySpotifyId(artistData.getId().toString())
+        return artistaRepository.findBySpotifyId(artistData.getId().toString())
                 .orElseGet(() -> {
                     Artista artista = new Artista();
                     artista.setNome(artistData.getName());
@@ -427,20 +426,18 @@ public class MusicaService {
                 });
     }
 
-    private void salvarMusicaSeNaoExistir(DeezerAlbumResponse.Track trackData, Artista artista, Genero genero) {
+    private void salvarMusicaSeNaoExistir(DeezerAlbumResponse.Track trackData, Artista artista, List<Genero> generos) {
         if (!musicaRepository.existsBySpotifyId(trackData.getId().toString())) {
             Musica musica = new Musica();
             musica.setTitulo(trackData.getTitle());
             musica.setSpotifyId(trackData.getId().toString());
-
-
             musica.getArtistas().add(artista);
-            musica.getGeneros().add(genero);
-
+            musica.getGeneros().addAll(generos);
             musicaRepository.save(musica);
         }
     }
 }
+
 
 
 

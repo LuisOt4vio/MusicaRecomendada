@@ -28,7 +28,11 @@ public class Artista {
     private List<Musica> musicas = new ArrayList<>();
 
     @Relationship(type = "ESTILO", direction = Relationship.Direction.OUTGOING)
-    private List<Genero> generos = new ArrayList<>();  // Modificado para ser uma lista de Genero
+    private List<Genero> generos = new ArrayList<>();
+
+    // Lista para armazenar os IDs dos álbuns
+    @Property
+    private List<String> albumIds = new ArrayList<>();  // Novo campo
 
     public Artista() {}
 
@@ -37,6 +41,8 @@ public class Artista {
         this.spotifyId = spotifyId;
         this.link = link;
     }
+
+    // Getters e setters
 
     public Long getId() {
         return id;
@@ -86,10 +92,25 @@ public class Artista {
         this.generos = generos;
     }
 
+    public List<String> getAlbumIds() {
+        return albumIds;
+    }
+
+    public void setAlbumIds(List<String> albumIds) {
+        this.albumIds = albumIds;
+    }
+
     // Método para adicionar um gênero ao artista
     public void adicionarGenero(Genero genero) {
         if (!this.generos.contains(genero)) {
             this.generos.add(genero);
+        }
+    }
+
+    // Método para adicionar o id do álbum
+    public void adicionarAlbumId(String albumId) {
+        if (!this.albumIds.contains(albumId)) {
+            this.albumIds.add(albumId);
         }
     }
 }
