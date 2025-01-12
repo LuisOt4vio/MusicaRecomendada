@@ -1,7 +1,9 @@
 package bcc.ifsuldeminas.sistemaMusicas.service;
 
+import bcc.ifsuldeminas.sistemaMusicas.model.entities.Musica;
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Playlist;
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Usuario;
+import bcc.ifsuldeminas.sistemaMusicas.repository.MusicaRepository;
 import bcc.ifsuldeminas.sistemaMusicas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,8 @@ import java.util.UUID;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-
+    @Autowired
+    private MusicaRepository musicaRepository;
     @Autowired
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -80,5 +83,37 @@ public class UsuarioService {
 
     public void salvar(Usuario usuario) {
         usuarioRepository.save(usuario);
+    }
+    public Usuario adicionarMusicaAoUsuario(Long usuarioId, Long musicaId) {
+
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(
+                () -> new IllegalArgumentException("Usuário não encontrado.")
+        );
+
+        Musica musica = musicaRepository.findById(musicaId).orElseThrow(
+                () -> new IllegalArgumentException("Música não encontrada.")
+        );
+
+        usuario.adicionarMusica(musica);
+
+
+        return usuarioRepository.save(usuario);
+    }
+    public void removerMusicaDoUsuario(Long usuarioId, Long musicaId) {
+        // Verificar se o usuário existe
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(
+                () -> new IllegalArgumentException("Usuário não encontrado.")
+        );
+
+        // Verificar se a música existe
+        Musica musica = musicaRepository.findById(musicaId).orElseThrow(
+                () -> new IllegalArgumentException("Música não encontrada.")
+        );
+
+        // Remover o relacionamento no banco
+        usuarioRepository.removerRelacionamentoMusica(usuarioId, musicaId);
+
+        // Atualizar a entidade em memória
+        usuario.removerMusica(musica);
     }
 }

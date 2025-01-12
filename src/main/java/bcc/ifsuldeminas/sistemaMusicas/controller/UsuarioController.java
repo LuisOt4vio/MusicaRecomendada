@@ -155,6 +155,35 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar música na playlist.");
         }
     }
+    @PostMapping("/{id}/gostaMusica/{musicaId}")
+    public ResponseEntity<?> adicionarMusicaAoUsuario(
+            @PathVariable Long id,
+            @PathVariable Long musicaId) {
+        try {
+            Usuario usuario = usuarioService.adicionarMusicaAoUsuario(id, musicaId);
+            return ResponseEntity.ok(usuario);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar música ao usuário.");
+        }
+    }
+    @DeleteMapping("/{id}/removerMusica/{musicaId}")
+    public ResponseEntity<?> removerMusicaDoUsuario(
+            @PathVariable Long id,
+            @PathVariable Long musicaId) {
+        try {
+            usuarioService.removerMusicaDoUsuario(id, musicaId);
+            return ResponseEntity.ok("Música removida com sucesso do usuário.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao remover música do usuário.");
+        }
+    }
+
+
+
 }
 
 

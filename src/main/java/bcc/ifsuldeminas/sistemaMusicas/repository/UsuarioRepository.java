@@ -16,5 +16,7 @@ public interface UsuarioRepository extends Neo4jRepository<Usuario, Long> {
     @Query("MATCH (u:Usuario) WHERE u.nome = $nome RETURN u")
     Usuario findByNome(String nome);
 
+    @Query("MATCH (u:Usuario)-[r:ADICIONOU]->(m:Musica) WHERE id(u) = $usuarioId AND id(m) = $musicaId DELETE r")
+    void removerRelacionamentoMusica(Long usuarioId, Long musicaId);
     Usuario findByNomeAndSenha(String nome, String senha);
 }
