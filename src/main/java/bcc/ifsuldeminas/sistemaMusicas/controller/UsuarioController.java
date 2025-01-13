@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -197,7 +198,75 @@ public class UsuarioController {
         return ResponseEntity.ok(recomendacoes);
     }
 
+    @DeleteMapping("/{usuarioId}/playlists/{playlistId}")
+    public ResponseEntity<?> excluirPlaylistDoUsuario(
+            @PathVariable Long usuarioId,
+            @PathVariable Long playlistId) {
+        try {
+            usuarioService.excluirPlaylistDoUsuario(usuarioId, playlistId);
+            return ResponseEntity.ok("Playlist excluída com sucesso.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao excluir a playlist: " + e.getMessage());
+        }
+    }
+    @PutMapping("/editar/{usuarioId}")
+    public ResponseEntity<?> alterarDadosUsuario(
+            @PathVariable Long usuarioId,
+            @RequestBody Map<String, Object> dadosUsuario) {
+        try {
+            String nome = (String) dadosUsuario.get("nome");
+            String genero = (String) dadosUsuario.get("genero");
+            String senha = (String) dadosUsuario.get("senha");
+            LocalDate dataNascimento = LocalDate.parse((String) dadosUsuario.get("dataNascimento"));
 
+            usuarioService.alterarDadosUsuario(usuarioId, nome, genero, dataNascimento, senha);
+            return ResponseEntity.ok("Dados do usuário alterados com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao alterar os dados do usuário: " + e.getMessage());
+        }
+    }
+    @DeleteMapping("/{usuarioId}/playlists/{playlistId}/musicas/{musicaId}")
+    public ResponseEntity<?> removerMusicaDePlaylist(
+            @PathVariable Long usuarioId,
+            @PathVariable Long playlistId,
+            @PathVariable Long musicaId) {
+        try {
+            usuarioService.removerMusicaDePlaylist(usuarioId, playlistId, musicaId);
+            return ResponseEntity.ok("Música removida da playlist com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao remover música da playlist: " + e.getMessage());
+        }
+    }
+    @PutMapping("/{usuarioId}/playlists/{playlistId}")
+    public ResponseEntity<?> editarDadosDaPlaylist(
+            @PathVariable Long usuarioId,
+            @PathVariable Long playlistId,
+            @RequestBody Map<String, String> dadosAtualizados) {
+        try {
+            String novoNome = dadosAtualizados.get("nome");
+            String novaDescricao = dadosAtualizados.get("descricao");
+
+            usuarioService.editarDadosDaPlaylist(usuarioId, playlistId, novoNome, novaDescricao);
+            return ResponseEntity.ok("Dados da playlist atualizados com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao editar os dados da playlist: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/excluir/{usuarioId}")
+    public ResponseEntity<?> excluirUsuario(@PathVariable Long usuarioId) {
+        try {
+            usuarioService.excluirUsuario(usuarioId);
+            return ResponseEntity.ok("Usuário excluído com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao excluir o usuário: " + e.getMessage());
+        }
+    }
 
 }
 

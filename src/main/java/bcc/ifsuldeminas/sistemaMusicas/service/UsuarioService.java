@@ -200,7 +200,7 @@ public class UsuarioService {
             Result result = session.run(query, Values.parameters("usuarioId", usuarioId));
 
             result.forEachRemaining(record -> {
-               
+
                 Node node = record.get("m2").asNode();
                 Musica musica = new Musica();
                 musica.setId(node.id());
@@ -213,6 +213,94 @@ public class UsuarioService {
         }
 
         return recomendacoes;
+    }
+    public void excluirPlaylistDoUsuario(Long usuarioId, Long playlistId) {
+        try (Session session = driver.session()) {
+            String query = """
+                    MATCH (u:Usuario)-[:CRIAR]->(p:Playlist)
+                    WHERE id(u) = $usuarioId AND id(p) = $playlistId
+                    DETACH DELETE p
+                    """;
+
+            session.run(query, Values.parameters("usuarioId", usuarioId, "playlistId", playlistId));
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao excluir a playlist: " + e.getMessage(), e);
+        }
+    }
+    public void removerMusicaDePlaylist(Long usuarioId, Long playlistId, Long musicaId) {
+        try (Session session = driver.session()) {
+            String query = """
+        MATCH (u:Usuario)-[:CRIAR]->(p:Playlist)-[r:Possui]->(m:Musica)
+        WHERE id(u) = $usuarioId AND id(p) = $playlistId AND id(m) = $musicaId
+        DELETE r
+        """;
+
+            session.run(query, Values.parameters(
+                    "usuarioId", usuarioId,
+                    "playlistId", playlistId,
+                    "musicaId", musicaId
+            ));
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao remover o relacionamento entre música e playlist: " + e.getMessage(), e);
+        }
+    }
+    public void editarDadosDaPlaylist(Long usuarioId, Long playlistId, String novoNome, String novaDescricao) {
+        try (Session session = driver.session()) {
+            String query = """
+            MATCH (u:Usuario)-[:CRIAR]->(p:Playlist)
+            WHERE id(u) = $usuarioId AND id(p) = $playlistId
+            SET p.nome = $novoNome, p.descricao = $novaDescricao
+            RETURN p
+            """;
+
+            session.run(query, Values.parameters(
+                    "usuarioId", usuarioId,
+                    "playlistId", playlistId,
+                    "novoNome", novoNome,
+                    "novaDescricao", novaDescricao
+            ));
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao editar os dados da playlist: " + e.getMessage(), e);
+        }
+    }
+
+
+
+    public void alterarDadosUsuario(Long usuarioId, String nome, String genero, LocalDate dataNascimento, String senha) {
+        try (Session session = driver.session()) {
+            String query = """
+                MATCH (u:Usuario)
+                WHERE id(u) = $usuarioId
+                SET u.nome = $nome,
+                    u.genero = $genero,
+                    u.dataNascimento = $dataNascimento,
+                    u.senha = $senha
+                RETURN u
+                """;
+
+            session.run(query, Values.parameters(
+                    "usuarioId", usuarioId,
+                    "nome", nome,
+                    "genero", genero,
+                    "dataNascimento", dataNascimento.toString(),
+                    "senha", senha
+            ));
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao alterar os dados do usuário: " + e.getMessage(), e);
+        }
+    }
+    public void excluirUsuario(Long usuarioId) {
+        try (Session session = driver.session()) {
+            String query = """
+            MATCH (u:Usuario)
+            WHERE id(u) = $usuarioId
+            DETACH DELETE u
+            """;
+
+            session.run(query, Values.parameters("usuarioId", usuarioId));
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao excluir o usuário: " + e.getMessage(), e);
+        }
     }
 
 }

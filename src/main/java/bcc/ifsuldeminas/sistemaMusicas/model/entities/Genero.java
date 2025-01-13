@@ -16,7 +16,7 @@ public class Genero {
     @Property
     private String spotifyId;
 
-    @Relationship(type = "PERTENCE_A", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "PERTENCE_A", direction = Relationship.Direction.OUTGOING)
     private List<Musica> musicas = new ArrayList<>();
 
     @Relationship(type = "ESTILO", direction = Relationship.Direction.OUTGOING)

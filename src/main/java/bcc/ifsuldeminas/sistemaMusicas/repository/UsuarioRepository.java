@@ -14,6 +14,7 @@ import java.util.UUID;
 public interface UsuarioRepository extends Neo4jRepository<Usuario, Long> {
     Optional<Usuario> findById(long id);
 
+
     void deleteById(long id);
     @Query("MATCH (u:Usuario) WHERE u.nome = $nome RETURN u")
     Usuario findByNome(String nome);
